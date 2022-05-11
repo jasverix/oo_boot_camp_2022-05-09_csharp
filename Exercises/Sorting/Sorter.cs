@@ -1,11 +1,11 @@
 namespace Exercises.Sorting;
 
-public interface IBetterable {
-    public bool IsBetter(IBetterable other);
+public interface IBetterable<T> {
+    public bool IsBetter(T other);
 }
 
 public static class ListExtensions {
-    public static T? GetBest<T>(this List<T> items) where T: IBetterable {
+    public static T? GetBest<T>(this List<T> items) where T: IBetterable<T> {
         if (items.Count == 0) {
             return default(T);
         }

@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Exercises.Probability;
+using Exercises.Sorting;
 using ExtensionMethods.Probability;
 using Xunit;
 
@@ -59,7 +60,7 @@ namespace Exercises.Tests.Unit {
             Assert.Equal(Likely, Likely & Certain);
             Assert.Equal(Impossible, Impossible & Likely);
         }
-        
+
         [Fact]
         public void Or()
         {
@@ -74,6 +75,16 @@ namespace Exercises.Tests.Unit {
         public void InvalidFractions() {
             Assert.Throws<ArgumentException>(() => (-0.1).Chance());
             Assert.Throws<ArgumentException>(() => 1.1.Chance());
+        }
+
+        [Fact]
+        public void Best() {
+            Assert.Null(new List<Chance>(0).GetBest());
+
+            var chances = new List<Chance>(3) {new Chance(0.5), new Chance(0.3), new Chance(0.7)};
+
+            var best = chances.GetBest();
+            Assert.Equal(new Chance(0.3), best);
         }
     }
 }

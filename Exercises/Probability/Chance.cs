@@ -10,7 +10,7 @@ using ExtensionMethods.Probability;
 
 namespace Exercises.Probability {
     // Understands the likelihood of something specific occurring
-    public class Chance : IBetterable {
+    public class Chance : IBetterable<Chance> {
         private const double EPSILON = 1e-10;
         private const double CERTAIN_FRACTION = 1.0;
         private readonly double _fraction;
@@ -27,8 +27,8 @@ namespace Exercises.Probability {
 
         public override int GetHashCode() => Math.Round(_fraction/EPSILON).GetHashCode();
 
-        public bool IsBetter(IBetterable obj)
-            => (obj is Chance other) && this._fraction < other._fraction;
+        public bool IsBetter(Chance other)
+            => this._fraction < other._fraction;
 
         public Chance Not() => new Chance(CERTAIN_FRACTION - _fraction);
 

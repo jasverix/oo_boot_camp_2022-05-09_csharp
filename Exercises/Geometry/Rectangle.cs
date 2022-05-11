@@ -9,7 +9,7 @@ using Exercises.Sorting;
 
 namespace Exercises.Geometry {
     // Understands a four-sided polygon with sides at right angles
-    public class Rectangle: IBetterable {
+    public class Rectangle: IBetterable<Rectangle> {
         private readonly double _length;
         private readonly double _width;
 
@@ -29,8 +29,8 @@ namespace Exercises.Geometry {
         public override int GetHashCode()
             => HashCode.Combine(_width.GetHashCode(), _length.GetHashCode());
 
-        public bool IsBetter(IBetterable obj)
-            => (obj is Rectangle other) && other.Area() < this.Area();
+        public bool IsBetter(Rectangle other)
+            => other.Area() < this.Area();
 
         public bool IsSquare()
             => Math.Abs(_length - _width) < double.Epsilon;

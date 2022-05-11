@@ -5,11 +5,12 @@
  */
 
 using Exercises.Probability;
+using Exercises.Sorting;
 using ExtensionMethods.Probability;
 
 namespace Exercises.Probability {
     // Understands the likelihood of something specific occurring
-    public class Chance {
+    public class Chance : IBetterable {
         private const double EPSILON = 1e-10;
         private const double CERTAIN_FRACTION = 1.0;
         private readonly double _fraction;
@@ -26,6 +27,9 @@ namespace Exercises.Probability {
 
         public override int GetHashCode() => Math.Round(_fraction/EPSILON).GetHashCode();
 
+        public bool IsBetter(IBetterable obj)
+            => (obj is Chance other) && this._fraction < other._fraction;
+
         public Chance Not() => new Chance(CERTAIN_FRACTION - _fraction);
 
         public static Chance operator !(Chance c) => c.Not();
@@ -33,7 +37,7 @@ namespace Exercises.Probability {
         public Chance And(Chance other) => (this._fraction * other._fraction).Chance();
 
         public static Chance operator &(Chance left, Chance right) => left.And(right);
-        
+
         // DeMorgan's Law: https://en.wikipedia.org/wiki/De_Morgan%27s_laws
         public Chance Or(Chance other) => !(!this & !other);
 

@@ -5,11 +5,11 @@
  */
 
 using System;
+using Exercises.Sorting;
 
-namespace Exercises.rectangle {
-    
+namespace Exercises.Geometry {
     // Understands a four-sided polygon with sides at right angles
-    public class Rectangle {
+    public class Rectangle: IBetterable {
         private readonly double _length;
         private readonly double _width;
 
@@ -19,8 +19,22 @@ namespace Exercises.rectangle {
             _width = width;
         }
 
+        public Rectangle(double sideSize) : this(sideSize, sideSize) {
+        }
+
         public double Area() => _length * _width;
 
         public double Perimeter() => 2 * (_length + _width);
+
+        public override int GetHashCode()
+            => HashCode.Combine(_width.GetHashCode(), _length.GetHashCode());
+
+        public bool IsBetter(IBetterable obj)
+            => (obj is Rectangle other) && other.Area() < this.Area();
+
+        public bool IsSquare()
+            => Math.Abs(_length - _width) < double.Epsilon;
+
+        public override string ToString() => $"{_width}, {_length}";
     }
 }

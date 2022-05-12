@@ -5,7 +5,7 @@
  */
 
 using System;
-using Exercises.rectangle;
+using Exercises.Geometry;
 using Xunit;
 
 namespace Exercises.Tests.Unit {

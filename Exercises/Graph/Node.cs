@@ -4,38 +4,67 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-namespace Exercises.Graph {
-    // Understands its neighbors
-    public class Node {
-        private const double Unreachable = double.PositiveInfinity;
-        private readonly List<Node> _neighbors = new List<Node>();
+namespace Exercises.Graph;
+
+// Understands its neighbors
+public class Node {
+    private const double Unreachable = double.PositiveInfinity;
+    private readonly List<Edge> _edges = new List<Edge>();
+
+    public bool CanReach(Node destination) => PathValue(destination, NoVisitedNodes(), Edge.HopStrategy) != Unreachable;
+
+    public int HopCount(Node destination) => (int)PathValue(destination, Edge.HopStrategy);
+
+    public double MinCost(Node destination) => PathValue(destination, Edge.CostStrategy);
+
+    private double PathValue(Node destination, Func<double, double> strategy) {
+        var result = PathValue(destination, NoVisitedNodes(), strategy);
+        if (result == Unreachable) throw new ArgumentException("Destination cannot be reached");
+        return result;
+    }
+
+    private double PathValue(Node destination, List<Node> visitedNodes, Func<double, double> strategy) {
+        if (this == destination) return 0.0;
+        if (visitedNodes.Contains(this)) return Unreachable;
+        if (_edges.Count == 0) return Unreachable;
+        return _edges.Min(e => e.PathValue(destination, CopyWithThis(visitedNodes), strategy));
+    }
+
+    private List<Node> CopyWithThis(List<Node> originals) => new List<Node>(originals) {this};
+
+    private static List<Node> NoVisitedNodes() => new();
+
+    public class Edge {
+        public static readonly Func<double, double> CostStrategy = e => e;
+        public static readonly Func<double, double> HopStrategy = e => 1;
+
+        private readonly Node _node;
+        private readonly double _cost;
+
+        public Edge(Node node, double cost) {
+            _node = node;
+            _cost = cost;
+        }
+
+        internal double PathValue(Node destination, List<Node> visitedNodes, Func<double, double> strategy)
+            => strategy(this._cost) + _node.PathValue(destination, visitedNodes, strategy);
+    }
+
+    public EdgeBuilder Cost(double amount) => new EdgeBuilder(amount, _edges);
+
+    public class EdgeBuilder {
+        private readonly double _cost;
+        private readonly List<Edge> _edges;
+
+        public EdgeBuilder(double cost, List<Edge> edges) {
+            _cost = cost;
+            _edges = edges;
+        }
 
         public Node To(Node neighbor) {
-            _neighbors.Add(neighbor);
+            _edges.Add(new Edge(neighbor, _cost));
             return neighbor;
         }
-
-        public bool CanReach(Node destination) => HopCount(destination, NoVisitedNodes()) != Unreachable;
-
-        public int HopCount(Node destination) {
-            var result = HopCount(destination, NoVisitedNodes());
-            if (result == Unreachable) throw new ArgumentException("Destination cannot be reached");
-            return (int)result;
-        }
-
-        private double HopCount(Node destination, List<Node> visitedNodes) {
-            if (this == destination) return 0;
-            if (visitedNodes.Contains(this)) return Unreachable;
-            var champion = Unreachable;
-            foreach (var n in _neighbors) {
-                var challenger = n.HopCount(destination, CopyWithThis(visitedNodes)) + 1;
-                if (challenger < champion) champion = challenger;
-            }
-            return champion;
-        }
-
-        private List<Node> CopyWithThis(List<Node> originals) => new List<Node>(originals) { this };
-
-        private static List<Node> NoVisitedNodes() => new();
     }
+
 }

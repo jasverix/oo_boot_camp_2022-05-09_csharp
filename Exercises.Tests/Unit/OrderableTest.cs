@@ -6,19 +6,19 @@
 
 using System;
 using System.Collections.Generic;
+using Exercises.Geometry;
 using Exercises.Order;
 using Exercises.Probability;
 using Exercises.Quantities;
-using Exercises.rectangle;
 using ExtensionMethods.Probability;
 using ExtensionMethods.Probability.Quantities;
 using Xunit;
 
 namespace Exercises.Tests.unit {
-    
+
     // Ensures Order operations are successful
     public class OrderableTest {
-        
+
         [Fact]
         public void LargestRectangle() {
             Assert.Equal(24.0, new List<Rectangle> {

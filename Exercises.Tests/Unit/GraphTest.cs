@@ -20,10 +20,10 @@ namespace Exercises.Tests.Unit {
         private static readonly Node G = new();
 
         static GraphTest() {
-            B.To(A);
-            B.To(C).To(D).To(E).To(B).To(F);
-            C.To(D);
-            C.To(E);
+            B.Cost(5.0).To(A);
+            B.Cost(6.0).To(C).Cost(7.0).To(D).Cost(2.0).To(E).Cost(3.0).To(B).Cost(4.0).To(F);
+            C.Cost(1.0).To(D);
+            C.Cost(8.0).To(E);
         }
 
         [Fact]
@@ -48,6 +48,19 @@ namespace Exercises.Tests.Unit {
             Assert.Throws<ArgumentException>(() => A.HopCount(B));
             Assert.Throws<ArgumentException>(() => G.HopCount(B));
             Assert.Throws<ArgumentException>(() => B.HopCount(G));
+        }
+
+        [Fact]
+        public void Cost() {
+            Assert.Equal(4d, B.MinCost(F));
+            Assert.Equal(3d, C.MinCost(E));
+            Assert.Equal(9d, B.MinCost(E));
+            Assert.Equal(7d, B.MinCost(D));
+            Assert.Equal(0.0, D.MinCost(D));
+            Assert.Equal(11d, D.MinCost(C));
+            Assert.Throws<ArgumentException>(() => A.MinCost(B));
+            Assert.Throws<ArgumentException>(() => A.MinCost(G));
+            Assert.Throws<ArgumentException>(() => G.MinCost(F));
         }
     }
 }

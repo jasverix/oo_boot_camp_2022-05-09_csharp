@@ -10,4 +10,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 
+.idea/
+*.user
+
 .DS_Store

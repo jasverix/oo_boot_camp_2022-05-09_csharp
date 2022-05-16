@@ -74,6 +74,7 @@ namespace Exercises.Tests.Unit {
             Assert.Equal(3, B.Path(E).Hops());
             Assert.Throws<ArgumentException>(() => C.Path(G));
             Assert.Throws<ArgumentException>(() => G.Path(B));
+            Assert.Throws<ArgumentException>(() => A.Path(B));
         }
     }
 }

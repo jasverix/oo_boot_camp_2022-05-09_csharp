@@ -4,21 +4,21 @@
  * @author Fred George  fredgeorge@acm.org
  */
 
-namespace Exercises.Graph {
-    // Understands a connection from one Node to another
-    internal class Link {
-        private readonly double _cost;
-        private readonly Node _target;
+namespace Exercises.Graph;
 
-        internal Link(double cost, Node target) {
-            _cost = cost;
-            _target = target;
-        }
+// Understands a connection from one Node to another
+internal class Link {
+    private readonly double _cost;
+    private readonly Node _target;
 
-        internal Path Path(Node destination, List<Node> visitedNodes, Path.CostStrategy strategy)
-            => _target.Path(destination, visitedNodes, strategy).Prepend(this);
-
-        internal static double Cost(List<Link> links)
-            => links.Sum(l => l._cost);
+    internal Link(double cost, Node target) {
+        _cost = cost;
+        _target = target;
     }
+
+    internal Path Path(Node destination, List<Node> visitedNodes, Path.CostStrategy strategy)
+        => _target.Path(destination, visitedNodes, strategy).Prepend(this);
+
+    internal static double Cost(List<Link> links)
+        => links.Sum(l => l._cost);
 }

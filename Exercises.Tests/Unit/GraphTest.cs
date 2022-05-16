@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Exercises.Graph;
 using Xunit;
 
@@ -70,11 +71,27 @@ namespace Exercises.Tests.Unit {
             Assert.Equal(0, B.Path(B).Hops());
             Assert.Equal(5d, B.Path(A).Cost());
             Assert.Equal(1, B.Path(A).Hops());
+            Assert.Equal(0d, A.Path(A).Cost());
+            Assert.Equal(0, A.Path(A).Hops());
             Assert.Equal(9d, B.Path(E).Cost());
             Assert.Equal(3, B.Path(E).Hops());
             Assert.Throws<ArgumentException>(() => C.Path(G));
             Assert.Throws<ArgumentException>(() => G.Path(B));
             Assert.Throws<ArgumentException>(() => A.Path(B));
+        }
+
+        [Fact]
+        public void AllPaths() {
+            Assert.Equal(14d + 9d + 15d, B.AllPaths(E).Sum(p => p.Cost()));
+            Assert.Equal(3 + 3 + 2, B.AllPaths(E).Sum(p => p.Hops()));
+            Assert.Equal(4d, B.AllPaths(F).Sum(p => p.Cost()));
+            Assert.Equal(1, B.AllPaths(F).Sum(p => p.Hops()));
+            Assert.Equal(0d, A.AllPaths(A).Sum(p => p.Cost()));
+            Assert.Equal(0, A.AllPaths(A).Sum(p => p.Hops()));
+            Assert.Equal(4d, B.AllPaths(F).Sum(p => p.Cost()));
+            Assert.Equal(1, B.AllPaths(F).Sum(p => p.Hops()));
+            Assert.Single(A.AllPaths(A));
+            Assert.Empty(B.AllPaths(G));
         }
     }
 }

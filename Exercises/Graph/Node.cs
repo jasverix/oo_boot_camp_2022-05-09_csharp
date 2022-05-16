@@ -8,11 +8,9 @@ namespace Exercises.Graph;
 
 // Understands its neighbors
 public class Node {
-    private static readonly Path Unreachable = Graph.Path.Unreachable;
-
     private readonly List<Link> _links = new List<Link>();
 
-    public bool CanReach(Node destination) => Path(destination, NoVisitedNodes, Graph.Path.FewestHops) != Unreachable;
+    public bool CanReach(Node destination) => AllPaths(destination).Count > 0;
 
     public int HopCount(Node destination) => Path(destination, Graph.Path.FewestHops).Hops();
 
@@ -20,34 +18,20 @@ public class Node {
 
     public Path Path(Node destination) => Path(destination, Graph.Path.LeastCost);
 
-    private Path Path(Node destination, Path.CostStrategy strategy) {
-        var result = Path(destination, NoVisitedNodes, strategy);
-        if (result == Unreachable) throw new ArgumentException("Unreachable destination");
-        return result;
-    }
+    public List<Path> AllPaths(Node destination) => AllPaths(destination, NoVisitedNodes).ToList();
 
-    internal Path Path(Node destination, List<Node> visitedNodes, Path.CostStrategy strategy) {
-        if (destination == this) return new Path.RealPath();
-        if (visitedNodes.Contains(this) || _links.Count == 0) return Unreachable;
+    private Path Path(Node destination, Path.CostStrategy strategy)
+        => AllPaths(destination, NoVisitedNodes)
+            .MinBy(path => strategy(path)) ?? throw new ArgumentException("Unreachable destination");
+
+    internal IEnumerable<Path> AllPaths(Node destination, List<Node> visitedNodes) {
+        if (this == destination) return new List<Path>() {new Path()};
+        if (visitedNodes.Contains(this)) return new List<Path>();
         return _links
-            .Select(link => link.Path(destination, CopyWithThis(visitedNodes), strategy))
-            .MinBy(path => strategy(path)) ?? Unreachable;
+            .SelectMany(link => link.AllPaths(destination, CopyWithThis(visitedNodes)));
     }
 
-    public List<Path> AllPaths(Node destination) {
-        return AllPaths(destination, NoVisitedNodes);
-    }
-
-    internal List<Path> AllPaths(Node destination, List<Node> visitedNodes) {
-        if (this == destination) return new List<Path>() {new Path.RealPath()};
-        if (visitedNodes.Contains(this) || _links.Count == 0) return new List<Path>();
-        return _links
-            .SelectMany(link => link.AllPaths(destination, CopyWithThis(visitedNodes)))
-            .Where(path => path != Unreachable)
-            .ToList();
-    }
-
-    private List<Node> CopyWithThis(List<Node> originals) => new List<Node>(originals) { this };
+    private List<Node> CopyWithThis(IEnumerable<Node> originals) => new List<Node>(originals) {this};
 
     private static List<Node> NoVisitedNodes => new();
 
@@ -66,6 +50,5 @@ public class Node {
             _links.Add(new Link(_cost, neighbor));
             return neighbor;
         }
-
     }
 }

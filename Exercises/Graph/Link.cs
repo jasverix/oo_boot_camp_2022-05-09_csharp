@@ -16,14 +16,10 @@ internal class Link {
         _target = target;
     }
 
-    internal Path Path(Node destination, List<Node> visitedNodes, Path.CostStrategy strategy)
-        => _target.Path(destination, visitedNodes, strategy).Prepend(this);
-
-    internal static double Cost(List<Link> links)
-        => links.Sum(l => l._cost);
-
-    public List<Path> AllPaths(Node destination, List<Node> visitedNodes)
+    public IEnumerable<Path> AllPaths(Node destination, List<Node> visitedNodes)
         => _target.AllPaths(destination, visitedNodes)
-            .Select(path => path.Prepend(this))
-            .ToList();
+            .Select(path => path.Prepend(this));
+
+    internal static double Cost(IEnumerable<Link> links)
+        => links.Sum(l => l._cost);
 }

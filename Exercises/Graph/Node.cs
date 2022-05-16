@@ -28,7 +28,7 @@ namespace Exercises.Graph {
             return _links.Min((link) => link.Cost(destination, CopyWithThis(visitedNodes), strategy));
         }
 
-        private static readonly FakePath UnreachablePath = new FakePath();
+        private static readonly Path UnreachablePath = Graph.Path.Unreachable;
 
         public Path Path(Node destination) {
             var result = Path(destination, NoVisitedNodes);
@@ -37,7 +37,7 @@ namespace Exercises.Graph {
         }
 
         internal Path Path(Node destination, List<Node> visitedNodes) {
-            if (destination == this) return new RealPath();
+            if (destination == this) return new Path.RealPath();
             if (visitedNodes.Contains(this) || _links.Count == 0) return UnreachablePath;
             return _links
                 .Select(link => link.Path(destination, CopyWithThis(visitedNodes)))

@@ -1,6 +1,10 @@
 namespace Exercises.Graph;
 
 public abstract class Path {
+    internal delegate double CostStrategy(Path path);
+    internal static readonly CostStrategy LeastCost = (path) => path.Cost();
+    internal static readonly CostStrategy FewestHops = (path) => path.Hops();
+
     public abstract double Cost();
     public abstract int Hops();
 

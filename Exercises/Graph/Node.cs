@@ -34,6 +34,19 @@ public class Node {
             .MinBy(path => strategy(path)) ?? Unreachable;
     }
 
+    public List<Path> AllPaths(Node destination) {
+        return AllPaths(destination, NoVisitedNodes);
+    }
+
+    internal List<Path> AllPaths(Node destination, List<Node> visitedNodes) {
+        if (this == destination) return new List<Path>() {new Path.RealPath()};
+        if (visitedNodes.Contains(this) || _links.Count == 0) return new List<Path>();
+        return _links
+            .SelectMany(link => link.AllPaths(destination, CopyWithThis(visitedNodes)))
+            .Where(path => path != Unreachable)
+            .ToList();
+    }
+
     private List<Node> CopyWithThis(List<Node> originals) => new List<Node>(originals) { this };
 
     private static List<Node> NoVisitedNodes => new();
@@ -55,5 +68,4 @@ public class Node {
         }
 
     }
-
 }

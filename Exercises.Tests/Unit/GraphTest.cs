@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Exercises.Graph;
 using Xunit;
 
@@ -45,6 +46,7 @@ namespace Exercises.Tests.Unit {
             Assert.Equal(1, B.HopCount(F));
             Assert.Equal(2, B.HopCount(D));
             Assert.Equal(3, C.HopCount(F));
+            Assert.Equal(2, B.HopCount(E));
             Assert.Throws<ArgumentException>(() => A.HopCount(B));
             Assert.Throws<ArgumentException>(() => G.HopCount(B));
             Assert.Throws<ArgumentException>(() => B.HopCount(G));
@@ -60,6 +62,18 @@ namespace Exercises.Tests.Unit {
             Assert.Throws<ArgumentException>(() => A.Cost(B));
             Assert.Throws<ArgumentException>(() => G.Cost(B));
             Assert.Throws<ArgumentException>(() => B.Cost(G));
+        }
+
+        [Fact]
+        public void Path() {
+            Assert.Equal(0d, B.Path(B).Cost());
+            Assert.Equal(0, B.Path(B).Hops());
+            Assert.Equal(5d, B.Path(A).Cost());
+            Assert.Equal(1, B.Path(A).Hops());
+            Assert.Equal(9d, B.Path(E).Cost());
+            Assert.Equal(3, B.Path(E).Hops());
+            Assert.Throws<ArgumentException>(() => C.Path(G));
+            Assert.Throws<ArgumentException>(() => G.Path(B));
         }
     }
 }

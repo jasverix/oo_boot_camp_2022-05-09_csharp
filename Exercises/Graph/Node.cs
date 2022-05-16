@@ -28,12 +28,28 @@ namespace Exercises.Graph {
             return _links.Min((link) => link.Cost(destination, CopyWithThis(visitedNodes), strategy));
         }
 
+        private static readonly FakePath UnreachablePath = new FakePath();
+
+        public Path Path(Node destination) {
+            var result = Path(destination, NoVisitedNodes);
+            if (result == UnreachablePath) throw new ArgumentException("Unreachable destination");
+            return result;
+        }
+
+        internal Path Path(Node destination, List<Node> visitedNodes) {
+            if (destination == this) return new RealPath();
+            if (visitedNodes.Contains(this) || _links.Count == 0) return UnreachablePath;
+            return _links
+                .Select(link => link.Path(destination, CopyWithThis(visitedNodes)))
+                .MinBy(path => path.Cost()) ?? UnreachablePath;
+        }
+
         private List<Node> CopyWithThis(List<Node> originals) => new List<Node>(originals) { this };
 
         private static List<Node> NoVisitedNodes => new();
 
         public LinkBuilder Cost(double amount) => new LinkBuilder(amount, _links);
-        
+
         public class LinkBuilder {
             private readonly double _cost;
             private readonly List<Link> _links;
